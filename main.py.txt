@@ -1,0 +1,57 @@
+import speech_recognition as sr
+import pyttsx3
+import pywhatkit
+import datetime
+import wikipedia
+import pyjokes
+listener = sr.Recognizer()
+engine = pyttsx3.init()
+voices = engine.getProperty('voices')
+engine.setProperty('voice', voices[1].id)
+engine.say('hi, i am alice')
+engine.say('what can i do for you')
+engine.runAndWait()
+def talk(text):
+ engine.say(text)
+ engine.runAndWait()
+def take_command():
+ try:
+ with sr.Microphone() as source:
+ print('listening...')
+ voice = listener.listen(source)
+ command = listener.recognize_google(voice)
+ command = command.lower()
+ if 'alice' in command:
+ command = command.replace('alice','')
+ print(command)
+ except:
+ pass
+ return command
+def run_alexa():
+ command = take_command()
+ print(command)
+ if 'play' in command:
+ song = command.replace('play', '')
+ talk('playing' +song)
+ pywhatkit.playonyt(song)
+ elif 'time' in command:
+ time = datetime.datetime.now().strftime('%I:%M %p')
+ print(time)
+ talk('current time is' + time)
+ elif 'date' in command:
+ date = datetime.date.today()
+ print(date)
+ talk('current date is' + date)
+ elif 'tell me' in command:
+ person = command.replace('tell me', '')
+ info = wikipedia.summary(person, 2)
+ print(info)
+ talk(info)
+ elif 'developed' in command:
+ talk(' i was developed by humera nausheen')
+ elif 'language' in command:
+ talk ('i was developed using python programming language')
+ elif 'joke' in command:
+ talk(pyjokes.get_joke())
+while True:
+ run_alexa()
